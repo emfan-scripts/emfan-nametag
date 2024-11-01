@@ -79,6 +79,7 @@ CreateThread(function()
 
     local NameTag = {}
 
+-- Prepare name tag data for the player
     if Config.Framework == 'qb' then
         NameTag = {
             id = id,
@@ -87,15 +88,6 @@ CreateThread(function()
             lastname = PlayerData.charinfo.lastname,
             netPed = netPed
         }
-    -- Prepare name tag data for the player
-    local NameTag = {
-        id = id,
-        gang = PlayerData.gang.label,
-        firstname = PlayerData.charinfo.firstname,
-        lastname = PlayerData.charinfo.lastname,
-        netPed = netPed
-    }
-
     elseif Config.Framework == 'esx' then   
         NameTag = {
             id = id,
@@ -104,7 +96,6 @@ CreateThread(function()
             lastname = PlayerData.charinfo.lastname,
             netPed = netPed
         }
-       
     else
         print("Your Config.Framework is setup wrong: ", Config.Framework)
     end
