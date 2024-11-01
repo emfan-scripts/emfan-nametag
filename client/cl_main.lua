@@ -66,20 +66,34 @@ end)
 
 CreateThread(function()
     emfan.waitForLogin()
+    
     local PlayerData = emfan.getPlayer()
     local id = PlayerData.source
     local netPed = PedToNet(PlayerPedId())
 
+    local NameTag = {}
 
+    if Config.Framework == 'qb' then
+        NameTag = {
+            id = id,
+            gang = PlayerData.gang.label,
+            firstname = PlayerData.charinfo.firstname,
+            lastname = PlayerData.charinfo.lastname,
+            netPed = netPed
+        }
 
-    -- If you're not using QBCore then you will need to change this to work with your framework
-    local NameTag = {
-        id = id,
-        gang = PlayerData.gang.label,
-        firstname = PlayerData.charinfo.firstname,
-        lastname = PlayerData.charinfo.lastname,
-        netPed = netPed
-    }
+    elseif Config.Framework == 'esx' then   
+        NameTag = {
+            id = id,
+            gang = PlayerData.job.label,                    -- Change this crew / gang if you want to show this instead, just make sure this exist since it doesn't in the standard ESX.
+            firstname = PlayerData.charinfo.firstname,
+            lastname = PlayerData.charinfo.lastname,
+            netPed = netPed
+        }
+       
+    else
+        print("Your Config.Framework is setup wrong: ", Config.Framework)
+    end
 
 
 
