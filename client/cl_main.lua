@@ -1,24 +1,30 @@
 local emfan = exports['emfan-framework']:getFrameworkSettings()
 
+-- Flag to toggle visibility of name tags
 local TagsVisible = false
+-- Table to store name tag data for players
 local NameTagData = {}
 
+-- Function to draw player information on the screen
 local function drawPlayerInfo(id, firstname, lastname, crewTag)
     local playerPed = PlayerPedId()
     local pos = GetEntityCoords(playerPed)
     local x, y, z = pos.x, pos.y, pos.z + 1.1
     
+    -- Convert 3D world coordinates to 2D screen coordinates
     local onScreen, _x, _y = World3dToScreen2d(x, y, z + 0.1)
     
     if onScreen then
+        -- Draw background rectangle for crew tag
         BeginTextCommandGetWidth("STRING")
         AddTextComponentString(crewTag)
         local width = EndTextCommandGetWidth(1) * 0.4
-        
         DrawRect(_x, _y + 0.015, width, 0.03, 255, 255, 255, 200)
         
+        -- Draw green bar below the crew tag
         DrawRect(_x, _y + 0.015 + 0.015, width, 0.005, 9, 214, 2, 255)
         
+        -- Draw crew tag text
         SetTextFont(4)
         SetTextProportional(1)
         SetTextScale(0.5, 0.5)
@@ -28,6 +34,7 @@ local function drawPlayerInfo(id, firstname, lastname, crewTag)
         AddTextComponentString(crewTag)
         EndTextCommandDisplayText(_x, _y) 
 
+        -- Draw player ID and name
         SetTextFont(4)
         SetTextProportional(1)
         SetTextScale(0.9, 0.9)
@@ -40,6 +47,7 @@ local function drawPlayerInfo(id, firstname, lastname, crewTag)
     end
 end
 
+-- Function to continuously show name tags when enabled
 local function showTags(state)
     while TagsVisible do
         Wait(0)
@@ -55,24 +63,20 @@ local function showTags(state)
     end
 end
 
+-- Command to toggle name tag visibility
 RegisterCommand(Config.Command, function(source, args, rawCommand)
-    if TagsVisible then
-        TagsVisible = false
-    else
-        TagsVisible = true
-    end
+    TagsVisible = not TagsVisible
     showTags(TagsVisible)
 end)
 
+-- Thread to initialize player data and send it to the server
 CreateThread(function()
     emfan.waitForLogin()
     local PlayerData = emfan.getPlayer()
     local id = PlayerData.source
     local netPed = PedToNet(PlayerPedId())
 
-
-
-    -- If you're not using QBCore then you will need to change this to work with your framework
+    -- Prepare name tag data for the player
     local NameTag = {
         id = id,
         gang = PlayerData.gang.label,
@@ -81,17 +85,11 @@ CreateThread(function()
         netPed = netPed
     }
 
-
-
+    -- Send player name tag data to the server
     TriggerServerEvent('emfan-nametag:server:AddNewPlayer', id, NameTag)
-
 end)
 
+-- Event to update name tag data from the server
 RegisterNetEvent('emfan-nametag:server:UpdateNameTagData', function(data)
-    for key, value in pairs(data) do 
-        for k, v in pairs(value) do
-            print("data", key, k, v)
-        end
-    end
     NameTagData = data
 end)
