@@ -1,5 +1,8 @@
 # emfan-nametag Script
 
+![Nametag Preview](nametag.png)
+
+
 ## Description
 The `emfan-nametag` script provides a customizable nametag feature for players in FiveM. It allows server administrators to manage and display player names effectively, enhancing player interaction and identification within the game.
 
