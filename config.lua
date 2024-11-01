@@ -1,8 +1,7 @@
 Config = {}
 
+Config.Framework = 'qb'    -- esx / qb
+
 Config.Command = 'showtags'
 
-Config.DB = {
-    Table = 'players',
-    Identifier = 'citizenid',
-}
+
